@@ -382,7 +382,7 @@ input[type="text"]:focus {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    overflow: hidden; /* Mask out crayon overlay / borders if needed */
+    overflow: visible; /* Allows speech bubble to float outside card bounds */
     user-select: none;
 }
 
@@ -399,6 +399,7 @@ input[type="text"]:focus {
         radial-gradient(ellipse at center, rgba(253, 224, 71, 0.25) 0%, rgba(253, 224, 71, 0.05) 80%);
     pointer-events: none;
     z-index: 1;
+    border-radius: inherit;
 }
 
 /* Themes Styling */
@@ -436,7 +437,7 @@ input[type="text"]:focus {
     justify-content: space-between;
     align-items: center;
     height: 48px;
-    z-index: 2;
+    z-index: 10;
     margin-bottom: 8px;
 }
 
@@ -471,7 +472,7 @@ input[type="text"]:focus {
     line-height: 1.2;
     color: #333;
     box-shadow: 3px 3px 0px rgba(0,0,0,0.15);
-    z-index: 10;
+    z-index: 99;
     pointer-events: none;
     transform-origin: bottom left;
     opacity: 0;
