@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Show Alianza elements, hide Entente
                 ententeCountries.style.display = 'none';
                 alianzaCountries.style.display = 'flex';
-                badgeLeft.style.display = 'none'; // Child's Alianza page didn't have this badge
+                badgeLeft.style.display = 'flex';
             }
         });
     });
