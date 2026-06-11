@@ -441,6 +441,7 @@ input[type="text"]:focus {
 }
 
 .badge-left {
+    position: relative;
     width: 48px;
     height: 48px;
     display: flex;
