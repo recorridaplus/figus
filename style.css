@@ -456,6 +456,85 @@ input[type="text"]:focus {
     filter: drop-shadow(1px 1.5px 0px rgba(0,0,0,0.15));
 }
 
+.speech-bubble {
+    position: absolute;
+    bottom: 50px;
+    left: 20px;
+    background-color: var(--color-paper);
+    border: 3px solid #333;
+    padding: 6px 10px;
+    border-radius: 16px 16px 16px 2px; /* Comic shape */
+    width: 170px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    color: #333;
+    box-shadow: 3px 3px 0px rgba(0,0,0,0.15);
+    z-index: 10;
+    pointer-events: none;
+    transform-origin: bottom left;
+    opacity: 0;
+    transform: scale(0);
+    animation: bubble-pop 6s infinite ease-in-out;
+}
+
+.speech-bubble span {
+    display: block;
+}
+
+.speech-bubble-tail {
+    position: absolute;
+    bottom: -10px;
+    left: 8px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 0 0;
+    border-color: #333 transparent transparent transparent;
+}
+
+.speech-bubble-tail::after {
+    content: '';
+    position: absolute;
+    top: -13px;
+    left: 3px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 8px 0 0;
+    border-color: var(--color-paper) transparent transparent transparent;
+}
+
+@keyframes bubble-pop {
+    0% {
+        opacity: 0;
+        transform: scale(0) translate(0, 10px);
+    }
+    5% {
+        opacity: 0;
+        transform: scale(0) translate(0, 10px);
+    }
+    10% {
+        opacity: 1;
+        transform: scale(1.1) rotate(-3deg) translate(0, -2px);
+    }
+    13% {
+        transform: scale(1) rotate(-1deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1) rotate(-1deg);
+    }
+    55% {
+        opacity: 0;
+        transform: scale(0) translate(0, 10px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0) translate(0, 10px);
+    }
+}
+
 .badge-right {
     border: 3px solid #333;
     border-radius: 50% 45% 52% 48% / 46% 52% 48% 50%; /* Sketchy circle */
