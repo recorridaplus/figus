@@ -89,11 +89,17 @@ h1, h2, h3, .logo-text {
 }
 
 .logo-container {
-    width: 100%;
-    max-width: 480px;
-    color: var(--color-text);
+    width: 80%;
+    max-width: 320px;
+    margin: 0 auto;
     filter: drop-shadow(2px 3px 0px rgba(0,0,0,0.08));
     animation: float 4s ease-in-out infinite alternate;
+}
+
+.histo-cards-logo-img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 .app-body {
