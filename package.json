@@ -1,0 +1,16 @@
+{
+  "name": "figuritas-pg",
+  "version": "1.0.0",
+  "description": "Creador de Figuritas HISTO CARDS de la Primera Guerra Mundial",
+  "main": "index.html",
+  "scripts": {
+    "dev": "lite-server"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

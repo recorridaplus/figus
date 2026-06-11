@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histo Cards - Creador de Figuritas de la Primera Guerra Mundial</title>
+    <!-- Google Fonts for Hand-drawn / Sketch Style -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- html2canvas for capturing the card as image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Main Application Logic -->
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header with kid-designed logo -->
+        <header class="app-header">
+            <div class="logo-container">
+                <img src="logo.jpeg" class="histo-cards-logo-img" alt="Histo Cards Logo">
+            </div>
+            <p class="subtitle">¡Crea tu propia figurita de la Primera Guerra Mundial!</p>
+        </header>>
+
+        <main class="app-body">
+            <!-- Left panel: Form and photo adjustment controls -->
+            <section class="control-panel card-panel">
+                <h2 class="section-title">1. Completa los datos</h2>
+                
+                <div class="form-group">
+                    <label for="char-name">Nombre del Soldado/Personaje</label>
+                    <input type="text" id="char-name" placeholder="Ej. Sargento Francisco, Enfermera Juana..." maxlength="30" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label>Bando / Alianza</label>
+                    <div class="alliance-selector">
+                        <label class="alliance-option entente active">
+                            <input type="radio" name="alliance" value="entente" checked>
+                            <span class="alliance-btn">
+                                <span class="alliance-name">Triple Entente</span>
+                                <span class="alliance-desc">Francia, G. Bretaña, Serbia, Bélgica...</span>
+                            </span>
+                        </label>
+                        <label class="alliance-option alianza">
+                            <input type="radio" name="alliance" value="alianza">
+                            <span class="alliance-btn">
+                                <span class="alliance-name">Triple Alianza</span>
+                                <span class="alliance-desc">Alemania, Austria-Hungría, Imp. Otomano...</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Sube tu foto</label>
+                    <label class="file-upload-zone" id="upload-zone" for="file-input">
+                        <input type="file" id="file-input" accept="image/*">
+                        <div class="upload-prompt">
+                            <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                            </svg>
+                            <p class="upload-text">Presiona aquí o arrastra tu foto</p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Interactive Crop/Scale controls -->
+                <div class="form-group photo-controls disabled" id="photo-controls">
+                    <label>Ajusta tu foto</label>
+                    
+                    <div class="slider-control">
+                        <span class="control-icon">🔍</span>
+                        <input type="range" id="zoom-slider" min="0.5" max="3" step="0.05" value="1">
+                        <span class="control-icon">🔎</span>
+                    </div>
+
+                    <div class="rotate-control">
+                        <button type="button" class="btn-secondary" id="btn-rotate-left">↺ Rotar Izq.</button>
+                        <button type="button" class="btn-secondary" id="btn-rotate-right">Rotar Der. ↻</button>
+                    </div>
+
+                    <p class="control-hint">Tip: También puedes arrastrar la foto directamente en la figurita para acomodarla.</p>
+                </div>
+            </section>
+
+            <!-- Right panel: Live Preview & Action Buttons -->
+            <section class="preview-panel card-panel">
+                <h2 class="section-title">2. Vista Previa</h2>
+
+                <!-- The Trading Card (Capture Area) -->
+                <div class="card-wrapper">
+                    <!-- Outer shadow/frame simulating paper sheet border -->
+                    <div class="trading-card entente-theme" id="trading-card">
+                        <!-- Crayon colored background overlay -->
+                        <div class="card-crayon-bg"></div>
+                        
+                        <!-- Top Header Section of Card -->
+                        <div class="card-header">
+                            <!-- Circular badge (Carita sonriente for Entente, placeholder or blank for Alianza based on drawing) -->
+                            <div class="badge-left" id="badge-left">
+                                <!-- Carita sonriente drawing SVG -->
+                                <svg class="badge-carita" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="6"/>
+                                    <!-- Spiky hair -->
+                                    <path d="M 20 25 L 25 10 L 35 20 L 45 5 L 55 20 L 65 5 L 75 20 L 80 10 L 83 28" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                                    <!-- Eyes -->
+                                    <circle cx="35" cy="45" r="5" fill="currentColor"/>
+                                    <circle cx="65" cy="45" r="5" fill="currentColor"/>
+                                    <!-- Smile -->
+                                    <path d="M 30 65 Q 50 80 70 65" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            
+                            <!-- Year Badge (Circle with 1914) -->
+                            <div class="badge-right">
+                                <span class="year-text">1914</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Photo Area -->
+                        <div class="card-photo-container">
+                            <div class="photo-placeholder" id="photo-placeholder">
+                                <svg class="placeholder-avatar" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                                <p>Sube una foto</p>
+                            </div>
+                            <div class="photo-viewport" id="photo-viewport">
+                                <img id="card-photo-img" src="" alt="Foto del personaje">
+                            </div>
+                            <!-- Pencil sketch border for photo -->
+                            <div class="photo-frame-border"></div>
+                        </div>
+
+                        <!-- Card Body / Info / Flags -->
+                        <div class="card-body">
+                            <!-- Character Name -->
+                            <div class="character-name-display" id="name-display">Nombre del Personaje</div>
+                            
+                            <!-- Flags and Country names drawn sketch-style -->
+                            <div class="card-countries-list" id="countries-list">
+                                <!-- Triple Entente countries list (shown by default) -->
+                                <div class="alliance-countries entente-countries">
+                                    <div class="country-item">
+                                        <span class="country-name">Serbia</span>
+                                        <div class="flag-svg-container">
+                                            <!-- Hand drawn Serbia flag -->
+                                            <svg viewBox="0 0 60 35" class="hand-drawn-flag">
+                                                <rect width="60" height="35" fill="#fff" stroke="#333" stroke-width="2"/>
+                                                <path d="M 2 2 L 58 2 L 58 13 L 2 13 Z" fill="#e15a5a" opacity="0.85"/>
+                                                <path d="M 2 13 L 58 13 L 58 24 L 2 24 Z" fill="#4d72b0" opacity="0.85"/>
+                                                <!-- Scribble look -->
+                                                <path d="M 5 6 L 55 8 M 8 18 L 50 17 M 4 28 L 56 30" stroke="#333" stroke-width="1" opacity="0.3"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="country-item">
+                                        <span class="country-name">Bélgica</span>
+                                        <div class="flag-svg-container">
+                                            <!-- Hand drawn Belgium flag -->
+                                            <svg viewBox="0 0 60 35" class="hand-drawn-flag">
+                                                <rect width="60" height="35" fill="#fff" stroke="#333" stroke-width="2"/>
+                                                <path d="M 2 2 L 20 2 L 20 33 L 2 33 Z" fill="#333" opacity="0.85"/>
+                                                <path d="M 20 2 L 40 2 L 40 33 L 20 33 Z" fill="#ffd54f" opacity="0.85"/>
+                                                <path d="M 40 2 L 58 2 L 58 33 L 40 33 Z" fill="#e15a5a" opacity="0.85"/>
+                                                <path d="M 8 10 L 8 28 M 28 5 L 32 30 M 48 10 L 52 25" stroke="#333" stroke-width="1" opacity="0.3"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="country-item">
+                                        <span class="country-name">Japón</span>
+                                        <div class="flag-svg-container">
+                                            <!-- Hand drawn Japan flag (as drawn by kid) -->
+                                            <svg viewBox="0 0 60 35" class="hand-drawn-flag">
+                                                <rect width="60" height="35" fill="#fcfcfc" stroke="#333" stroke-width="2"/>
+                                                <circle cx="30" cy="17" r="8" fill="#e15a5a" opacity="0.85"/>
+                                                <!-- Rays drawn with pencil lines -->
+                                                <g stroke="#e15a5a" stroke-width="1.5" opacity="0.7">
+                                                    <line x1="30" y1="17" x2="15" y2="10"/>
+                                                    <line x1="30" y1="17" x2="45" y2="10"/>
+                                                    <line x1="30" y1="17" x2="15" y2="25"/>
+                                                    <line x1="30" y1="17" x2="45" y2="25"/>
+                                                    <line x1="30" y1="17" x2="30" y2="4"/>
+                                                    <line x1="30" y1="17" x2="30" y2="31"/>
+                                                    <line x1="30" y1="17" x2="10" y2="17"/>
+                                                    <line x1="30" y1="17" x2="50" y2="17"/>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="country-item">
+                                        <span class="country-name">Italia</span>
+                                        <div class="flag-svg-container">
+                                            <!-- Hand drawn Italy flag -->
+                                            <svg viewBox="0 0 60 35" class="hand-drawn-flag">
+                                                <rect width="60" height="35" fill="#fff" stroke="#333" stroke-width="2"/>
+                                                <path d="M 2 2 L 20 2 L 20 33 L 2 33 Z" fill="#66bb6a" opacity="0.85"/>
+                                                <path d="M 40 2 L 58 2 L 58 33 L 40 33 Z" fill="#e15a5a" opacity="0.85"/>
+                                                <rect x="25" y="11" width="10" height="13" fill="#4d72b0" rx="1" stroke="#333" stroke-width="1"/>
+                                                <path d="M 27 17 L 33 17 M 30 14 L 30 20" stroke="#fff" stroke-width="1"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="country-item">
+                                        <span class="country-name">EE.UU.</span>
+                                        <div class="flag-svg-container">
+                                            <!-- Hand drawn USA flag -->
+                                            <svg viewBox="0 0 60 35" class="hand-drawn-flag">
+                                                <rect width="60" height="35" fill="#fff" stroke="#333" stroke-width="2"/>
+                                                <path d="M 2 2 L 58 2 M 2 7 L 58 7 M 2 12 L 58 12 M 2 17 L 58 17 M 2 22 L 58 22 M 2 27 L 58 27 M 2 32 L 58 32" stroke="#e15a5a" stroke-width="2.5" opacity="0.85"/>
+                                                <rect x="2" y="2" width="25" height="18" fill="#4d72b0" opacity="0.9"/>
+                                                <circle cx="7" cy="6" r="1" fill="#fff"/>
+                                                <circle cx="13" cy="6" r="1" fill="#fff"/>
+                                                <circle cx="19" cy="6" r="1" fill="#fff"/>
+                                                <circle cx="10" cy="11" r="1" fill="#fff"/>
+                                                <circle cx="16" cy="11" r="1" fill="#fff"/>
+                                                <circle cx="7" cy="15" r="1" fill="#fff"/>
+                                                <circle cx="13" cy="15" r="1" fill="#fff"/>
+                                                <circle cx="19" cy="15" r="1" fill="#fff"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Triple Alianza countries list (hidden by default, shown when alliance-theme is active) -->
+                                <div class="alliance-countries alianza-countries" style="display: none;">
+                                    <div class="country-item">
+                                        <span class="country-name">Austria-H.</span>
+                                        <div class="flag-svg-container">
+                                            <!-- Hand drawn Austria-Hungary flag (based on kid's sketch) -->
+                                            <svg viewBox="0 0 60 35" class="hand-drawn-flag">
+                                                <rect width="60" height="35" fill="#fff" stroke="#333" stroke-width="2"/>
+                                                <!-- Red stripes on top and bottom -->
+                                                <path d="M 2 2 L 58 2 L 58 13 L 2 13 Z" fill="#e15a5a" opacity="0.85"/>
+                                                <!-- Left bottom is red, right bottom is green -->
+                                                <path d="M 2 24 L 30 24 L 30 33 L 2 33 Z" fill="#e15a5a" opacity="0.85"/>
+                                                <path d="M 30 24 L 58 24 L 58 33 L 30 33 Z" fill="#66bb6a" opacity="0.85"/>
+                                                <line x1="30" y1="2" x2="30" y2="33" stroke="#333" stroke-width="1.5" stroke-dasharray="2,2"/>
+                                                <!-- Scribble lines -->
+                                                <path d="M 5 6 L 55 8 M 8 18 L 50 17 M 4 28 L 56 30" stroke="#333" stroke-width="1" opacity="0.3"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="country-item">
+                                        <span class="country-name">Bulgaria</span>
+                                        <div class="flag-svg-container">
+                                            <!-- Hand drawn Bulgaria flag -->
+                                            <svg viewBox="0 0 60 35" class="hand-drawn-flag">
+                                                <rect width="60" height="35" fill="#fff" stroke="#333" stroke-width="2"/>
+                                                <path d="M 2 13 L 58 13 L 58 24 L 2 24 Z" fill="#66bb6a" opacity="0.85"/>
+                                                <path d="M 2 24 L 58 24 L 58 33 L 2 33 Z" fill="#e15a5a" opacity="0.85"/>
+                                                <path d="M 8 18 L 50 17 M 4 28 L 56 30" stroke="#333" stroke-width="1" opacity="0.3"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="country-item">
+                                        <span class="country-name">Imp. Otomano</span>
+                                        <div class="flag-svg-container">
+                                            <!-- Hand drawn Ottoman Empire flag -->
+                                            <svg viewBox="0 0 60 35" class="hand-drawn-flag">
+                                                <rect width="60" height="35" fill="#e15a5a" stroke="#333" stroke-width="2" opacity="0.85"/>
+                                                <!-- White Crescent and Star (drawn hand-drawn style) -->
+                                                <path d="M 28 10 A 8 8 0 1 0 28 26 A 7 7 0 1 1 24 12" fill="#fff"/>
+                                                <polygon points="34,14 36,18 40,18 37,20 38,24 35,22 32,24 33,20 30,18 34,18" fill="#fff"/>
+                                                <path d="M 5 6 L 55 8 M 4 28 L 56 30" stroke="#333" stroke-width="1" opacity="0.3"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="card-footer">
+                            <!-- HG Logo -->
+                            <div class="footer-hg-logo">
+                                <svg class="hg-logo-svg" viewBox="0 0 100 80">
+                                    <g fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                                        <!-- H -->
+                                        <path d="M 15 15 L 15 65 M 35 15 L 35 65 M 13 40 L 37 40" />
+                                        <!-- G -->
+                                        <path d="M 85 25 C 80 15, 55 15, 55 40 C 55 65, 80 65, 85 55 L 85 40 L 70 40" />
+                                    </g>
+                                    <!-- Pencil sketchy lines inside -->
+                                    <g fill="none" stroke="currentColor" stroke-width="2" opacity="0.5">
+                                        <path d="M 18 20 L 32 35 M 18 45 L 32 60 M 60 25 L 75 40 M 60 50 L 75 60" />
+                                    </g>
+                                </svg>
+                            </div>
+                            
+                            <!-- Alliance Label -->
+                            <div class="footer-alliance-label" id="alliance-display">triple entente</div>
+                            
+                            <!-- Blue Circle Badge -->
+                            <div class="footer-circle-badge">
+                                <svg viewBox="0 0 40 40" width="28" height="28">
+                                    <circle cx="20" cy="20" r="15" fill="#4ea8de" stroke="#1d4ed8" stroke-width="3" opacity="0.8"/>
+                                    <circle cx="20" cy="20" r="7" fill="#fff" opacity="0.5"/>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Handwritten notebook border overlay -->
+                        <div class="card-notebook-border"></div>
+                    </div>
+                </div>
+
+                <!-- Export Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-primary" id="btn-download">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Descargar mi Figurita
+                    </button>
+                    <button class="btn-secondary" id="btn-reset">Reestablecer</button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>Diseño original de HISTO CARDS &copy; 2026. Proyecto Escolar de la Primera Guerra Mundial.</p>
+        </footer>
+    </div>
+</body>
+</html>
